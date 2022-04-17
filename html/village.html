@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Babylon Template</title>
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <!-- モデルをインポート可能な状態にするライブラリ -->
+        <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+        <!-- モデルをタッチ操作するためのライブラリ -->
+        <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+        <!-- Babylon.js Viewer ライブラリの読み込み --->
+        <script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+    </head>
+   <body>
+    <!-- モデル village.glb の表示 --->
+    <!-- extends属性に「minimal」を指定することで、Viewerがデフォルトで用意している地面やアイコンが削除される -->
+    <!-- <babylon extends="minimal" model="https://assets.babylonjs.com/meshes/village.glb"></babylon> -->
+    <!-- ↑の状態だと、カメラが村の調整ができない。↓にし、モデルがViewerにロードされる前にカメラの調整を行う。 -->
+    <babylon id="myViewer" extends="minimal"></babylon>
+    <script>
+        BabylonViewer.viewerManager.getViewerPromiseById('myViewer').then((viewer) => {
+            // Viewerのロード後にカメラの調整を実施
+            viewer.onSceneInitObservable.add(() => {
+                viewer.sceneManager.camera.radius = 40; // カメラの半径をセット
+                viewer.sceneManager.camera.beta = Math.PI / 3; // 角度
+            });
+            // カメラの調整後にモデルのロードを実施
+            viewer.onEngineInitObservable.add((scene) => {
+                viewer.loadModel({
+                    url: "https://assets.babylonjs.com/meshes/village.glb"
+                });
+            });
+        });
+    </script>
+   </body>
+</html>
